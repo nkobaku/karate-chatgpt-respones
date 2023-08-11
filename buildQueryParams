@@ -1,3 +1,125 @@
+function buildURLWithParams(baseURL, queryParamsMap, matrixParamsMap) {
+  var queryParams = [];
+  var matrixParams = [];
+
+  for (var key in queryParamsMap) {
+    if (queryParamsMap[key] !== undefined && queryParamsMap[key] !== null) {
+      var encodedKey = encodeURIComponent(key);
+      var encodedValue = encodeURIComponent(queryParamsMap[key]);
+      queryParams.push(encodedKey + '=' + encodedValue);
+    }
+  }
+
+  for (var key in matrixParamsMap) {
+    if (matrixParamsMap[key] !== undefined && matrixParamsMap[key] !== null) {
+      var encodedKey = encodeURIComponent(key);
+      var encodedValue = encodeURIComponent(matrixParamsMap[key]);
+      matrixParams.push(';' + encodedKey + '=' + encodedValue);
+    }
+  }
+
+  var queryParamsString = queryParams.join('&');
+  var matrixParamsString = matrixParams.join('');
+
+  var finalURL = baseURL;
+
+  if (matrixParamsString) {
+    finalURL += matrixParamsString;
+  }
+
+  if (queryParamsString) {
+    finalURL += (matrixParamsString ? '&' : '?') + queryParamsString;
+  }
+
+  return finalURL;
+}
+
+
+
+4437
+
+
+
+const buildURLWithParams = (baseURL, queryParamsMap, matrixParamsMap) => {
+  const queryParams = [];
+  const matrixParams = [];
+
+  for (const [key, value] of Object.entries(queryParamsMap)) {
+    const encodedKey = encodeURIComponent(key);
+    const encodedValue = encodeURIComponent(value);
+    queryParams.push(`${encodedKey}=${encodedValue}`);
+  }
+
+  for (const [key, value] of Object.entries(matrixParamsMap)) {
+    const encodedKey = encodeURIComponent(key);
+    const encodedValue = encodeURIComponent(value);
+    matrixParams.push(`;${encodedKey}=${encodedValue}`);
+  }
+
+  const queryParamsString = queryParams.join('&');
+  const matrixParamsString = matrixParams.join('');
+
+  let finalURL = baseURL;
+
+  if (matrixParamsString) {
+    finalURL += matrixParamsString;
+  }
+
+  if (queryParamsString) {
+    finalURL += `${matrixParamsString ? '&' : '?'}${queryParamsString}`;
+  }
+
+  return finalURL;
+};
+
+export default buildURLWithParams;
+
+
+
+
+
+3744
+
+
+
+const buildURLWithParams = (baseURL, queryParamsMap, matrixParamsMap) => {
+  const queryParams = [];
+  const matrixParams = [];
+
+  for (const [key, value] of Object.entries(queryParamsMap)) {
+    const encodedKey = encodeURIComponent(key);
+    const encodedValue = encodeURIComponent(value);
+    queryParams.push(`${encodedKey}=${encodedValue}`);
+  }
+
+  for (const [key, value] of Object.entries(matrixParamsMap)) {
+    const encodedKey = encodeURIComponent(key);
+    const encodedValue = encodeURIComponent(value);
+    matrixParams.push(`;${encodedKey}=${encodedValue}`);
+  }
+
+  const queryParamsString = queryParams.join('&');
+  const matrixParamsString = matrixParams.join('');
+
+  let finalURL = baseURL;
+
+  if (matrixParamsString.length > 0) {
+    finalURL += matrixParamsString;
+  }
+
+  if (queryParamsString.length > 0) {
+    finalURL += `?${queryParamsString}`;
+  }
+
+  return finalURL;
+};
+
+export default buildURLWithParams;
+
+
+
+
+
 Feature: Building URLs with Params
 
   Scenario: Building a URL with query and matrix parameters
