@@ -1,0 +1,377 @@
+function buildURLWithParams(baseURL, queryParamsMap, matrixParamsMap) {
+  const queryParams = [];
+  const matrixParams = [];
+
+  for (const key in queryParamsMap) {
+    if (queryParamsMap.hasOwnProperty(key)) {
+      const value = encodeURIComponent(queryParamsMap[key]);
+      queryParams.push(`${encodeURIComponent(key)}=${value}`);
+    }
+  }
+
+  for (const key in matrixParamsMap) {
+    if (matrixParamsMap.hasOwnProperty(key)) {
+      const value = encodeURIComponent(matrixParamsMap[key]);
+      matrixParams.push(`;${encodeURIComponent(key)}=${value}`);
+    }
+  }
+
+  const queryParamsString = queryParams.join('&');
+  const matrixParamsString = matrixParams.join('');
+
+  let finalURL = baseURL;
+
+  if (matrixParamsString.length > 0) {
+    finalURL += matrixParamsString;
+  }
+
+  if (queryParamsString.length > 0) {
+    finalURL += `?${queryParamsString}`;
+  }
+
+  return finalURL;
+}
+
+
+
+const baseURL = 'https://example.com/product';
+const queryParams = {
+  category: 'electronics',
+  color: 'blue'
+};
+const matrixParams = {
+  size: 'medium',
+  discount: '20'
+};
+
+const finalURL = buildURLWithParams(baseURL, queryParams, matrixParams);
+console.log(finalURL); // Output: "https://example.com/product;size=medium;discount=20?category=electronics&color=blue"
+
+
+
+Feature: Building URLs with Params
+
+  Scenario: Building a URL with query and matrix parameters
+    Given def baseURL = 'https://example.com/product'
+    And def queryParams = { category: 'electronics', color: 'blue' }
+    And def matrixParams = { size: 'medium', discount: '20' }
+    And def buildURLWithParams =
+    """
+    function buildURLWithParams(baseURL, queryParamsMap, matrixParamsMap) {
+      // The JavaScript function code goes here...
+
+      return finalURL;
+    }
+    """
+    When def finalURL = call buildURLWithParams baseURL, queryParams, matrixParams
+    Then match finalURL == 'https://example.com/product;size=medium;discount=20?category=electronics&color=blue'
+    And print 'Final URL:', finalURL
+
+
+
+
+
+
+
+Open sidebar
+Build Query Params Function
+
+Default (GPT-3.5)
+
+User
+Can you write javascript function to build query params string taking a map of params
+
+ChatGPT
+Sure, I can help you with that! Here's a JavaScript function that takes a map of parameters and builds a query parameter string:
+
+javascript
+Copy code
+function buildQueryParams(paramsMap) {
+  const queryParams = [];
+
+  for (const key in paramsMap) {
+    if (paramsMap.hasOwnProperty(key)) {
+      const value = encodeURIComponent(paramsMap[key]);
+      queryParams.push(`${encodeURIComponent(key)}=${value}`);
+    }
+  }
+
+  return queryParams.join('&');
+}
+You can use this function by passing in a map of parameters like this:
+
+javascript
+Copy code
+const params = {
+  name: 'John Doe',
+  age: 30,
+  city: 'Exampleville'
+};
+
+const queryParamsString = buildQueryParams(params);
+console.log(queryParamsString); // Output: "name=John%20Doe&age=30&city=Exampleville"
+Remember to properly handle encoding of keys and values using encodeURIComponent to ensure that special characters are appropriately represented in the query parameter string.
+
+
+
+
+User
+Define a karate scenario for above function
+
+ChatGPT
+Certainly! In the context of testing the JavaScript function for building query parameter strings, you can create a Karate scenario as follows:
+
+cucumber
+Copy code
+Feature: Query Parameter Builder
+
+  Scenario: Building a query parameter string
+    Given def params = { name: 'John Doe', age: 30, city: 'Exampleville' }
+    When def queryParamsString = call read('classpath:buildQueryParams.js') params
+    Then match queryParamsString == 'name=John%20Doe&age=30&city=Exampleville'
+In this scenario, we're using the call keyword to execute the JavaScript function defined in the buildQueryParams.js file and passing the params map to it. The expected result is a query parameter string, and we're using the match keyword to assert that the actual result matches the expected query parameter string.
+
+
+
+
+User
+Can you add a print statement for query params at the end 
+
+ChatGPT
+Of course! Here's the modified Karate scenario with a print statement added at the end:
+
+cucumber
+Copy code
+Feature: Query Parameter Builder
+
+  Scenario: Building a query parameter string
+    Given def params = { name: 'John Doe', age: 30, city: 'Exampleville' }
+    When def queryParamsString = call read('classpath:buildQueryParams.js') params
+    Then match queryParamsString == 'name=John%20Doe&age=30&city=Exampleville'
+    And print 'Query Parameters:', queryParamsString
+With this change, after executing the scenario, you will see the printed statement "Query Parameters:" followed by the actual query parameter string in the output.
+
+
+
+
+User
+Match failed: Equals
+''
+
+ChatGPT
+I apologize for the oversight. It seems there might be an issue with the matching step. Let's modify the scenario to capture the actual output and then compare it. Here's the corrected scenario:
+
+cucumber
+Copy code
+Feature: Query Parameter Builder
+
+  Scenario: Building a query parameter string
+    Given def params = { name: 'John Doe', age: 30, city: 'Exampleville' }
+    When def queryParamsString = call read('classpath:buildQueryParams.js') params
+    Then def expectedQueryString = 'name=John%20Doe&age=30&city=Exampleville'
+    And match queryParamsString == expectedQueryString
+    And print 'Expected Query Parameters:', expectedQueryString
+    And print 'Actual Query Parameters:', queryParamsString
+This scenario now captures the expected query parameter string as a variable and compares it with the actual query parameter string using the match keyword. It also prints both the expected and actual query parameter strings. This should help you identify any discrepancies between the expected and actual results.
+
+
+
+
+User
+Can you please regenerate buildQueryParams using es6
+
+ChatGPT
+Certainly! Here's the buildQueryParams function implemented using ES6 syntax:
+
+javascript
+Copy code
+const buildQueryParams = paramsMap => {
+  const queryParams = [];
+
+  for (const [key, value] of Object.entries(paramsMap)) {
+    const encodedKey = encodeURIComponent(key);
+    const encodedValue = encodeURIComponent(value);
+    queryParams.push(`${encodedKey}=${encodedValue}`);
+  }
+
+  return queryParams.join('&');
+};
+
+export default buildQueryParams;
+This code uses arrow functions, object destructuring, and the Object.entries() method to iterate over the properties of the paramsMap object. It then encodes the keys and values using encodeURIComponent() and constructs the query parameter string. Finally, the export default statement makes the function available for importing in other modules.
+
+
+
+
+User
+Rewrite karate scenario with es6
+
+ChatGPT
+Certainly! Here's the rewritten Karate scenario using ES6 syntax for the JavaScript function:
+
+cucumber
+Copy code
+Feature: Query Parameter Builder
+
+  Scenario: Building a query parameter string
+    Given def params = { name: 'John Doe', age: 30, city: 'Exampleville' }
+    And def buildQueryParams =
+    """
+    const buildQueryParams = paramsMap => {
+      const queryParams = [];
+    
+      for (const [key, value] of Object.entries(paramsMap)) {
+        const encodedKey = encodeURIComponent(key);
+        const encodedValue = encodeURIComponent(value);
+        queryParams.push(\`\${encodedKey}=\${encodedValue}\`);
+      }
+    
+      return queryParams.join('&');
+    };
+    """
+    When def queryParamsString = call buildQueryParams params
+    Then def expectedQueryString = 'name=John%20Doe&age=30&city=Exampleville'
+    And match queryParamsString == expectedQueryString
+    And print 'Expected Query Parameters:', expectedQueryString
+    And print 'Actual Query Parameters:', queryParamsString
+In this scenario, I've embedded the ES6 version of the buildQueryParams function directly using the """ syntax. The rest of the scenario remains the same, with the appropriate modifications to use the buildQueryParams function correctly.
+
+
+
+
+User
+Can you write a js function to build matrix params 
+
+ChatGPT
+Certainly! Here's a JavaScript function that takes a map of matrix parameters and builds a matrix parameter string:
+
+javascript
+Copy code
+function buildMatrixParams(paramsMap) {
+  const matrixParams = [];
+
+  for (const key in paramsMap) {
+    if (paramsMap.hasOwnProperty(key)) {
+      const value = encodeURIComponent(paramsMap[key]);
+      matrixParams.push(`;${encodeURIComponent(key)}=${value}`);
+    }
+  }
+
+  return matrixParams.join('');
+}
+You can use this function in a similar way as before, by passing in a map of parameters:
+
+javascript
+Copy code
+const params = {
+  category: 'electronics',
+  color: 'blue',
+  size: 'medium'
+};
+
+const matrixParamsString = buildMatrixParams(params);
+console.log(matrixParamsString); // Output: ";category=electronics;color=blue;size=medium"
+This function will encode the keys and values properly and concatenate them into a matrix parameter string. Remember, matrix parameters are semicolon-separated instead of the usual ampersand-separated query parameters.
+
+
+
+
+User
+Can you now combine matrix params and query params and generate a generic js function
+
+ChatGPT
+Certainly! Here's a JavaScript function that takes both matrix parameters and query parameters as input and generates a URL string with both types of parameters:
+
+javascript
+Copy code
+function buildURLWithParams(baseURL, queryParamsMap, matrixParamsMap) {
+  const queryParams = [];
+  const matrixParams = [];
+
+  for (const key in queryParamsMap) {
+    if (queryParamsMap.hasOwnProperty(key)) {
+      const value = encodeURIComponent(queryParamsMap[key]);
+      queryParams.push(`${encodeURIComponent(key)}=${value}`);
+    }
+  }
+
+  for (const key in matrixParamsMap) {
+    if (matrixParamsMap.hasOwnProperty(key)) {
+      const value = encodeURIComponent(matrixParamsMap[key]);
+      matrixParams.push(`;${encodeURIComponent(key)}=${value}`);
+    }
+  }
+
+  const queryParamsString = queryParams.join('&');
+  const matrixParamsString = matrixParams.join('');
+
+  let finalURL = baseURL;
+
+  if (matrixParamsString.length > 0) {
+    finalURL += matrixParamsString;
+  }
+
+  if (queryParamsString.length > 0) {
+    finalURL += `?${queryParamsString}`;
+  }
+
+  return finalURL;
+}
+You can use this function like this:
+
+javascript
+Copy code
+const baseURL = 'https://example.com/product';
+const queryParams = {
+  category: 'electronics',
+  color: 'blue'
+};
+const matrixParams = {
+  size: 'medium',
+  discount: '20'
+};
+
+const finalURL = buildURLWithParams(baseURL, queryParams, matrixParams);
+console.log(finalURL); // Output: "https://example.com/product;size=medium;discount=20?category=electronics&color=blue"
+This function takes a base URL, query parameters map, and matrix parameters map, and generates a URL string with both types of parameters combined.
+
+
+
+
+User
+Can you now write karate scenario to call and use above generated url 
+
+ChatGPT
+Certainly! Here's a Karate scenario that demonstrates how to call the JavaScript function buildURLWithParams and use the generated URL:
+
+cucumber
+Copy code
+Feature: Building URLs with Params
+
+  Scenario: Building a URL with query and matrix parameters
+    Given def baseURL = 'https://example.com/product'
+    And def queryParams = { category: 'electronics', color: 'blue' }
+    And def matrixParams = { size: 'medium', discount: '20' }
+    And def buildURLWithParams =
+    """
+    function buildURLWithParams(baseURL, queryParamsMap, matrixParamsMap) {
+      // The JavaScript function code goes here...
+
+      return finalURL;
+    }
+    """
+    When def finalURL = call buildURLWithParams baseURL, queryParams, matrixParams
+    Then match finalURL == 'https://example.com/product;size=medium;discount=20?category=electronics&color=blue'
+    And print 'Final URL:', finalURL
+In this scenario, the baseURL, queryParams, and matrixParams are set up. The JavaScript function buildURLWithParams is embedded using the """ syntax, and then the function is called with the provided parameters. The match keyword is used to assert that the generated finalURL matches the expected URL, and the print statement is used to display the final URL in the output.
+
+
+
+
+
+Send a message
+
+
+Free Research Preview. ChatGPT may produce inaccurate information about people, places, or facts. ChatGPT August 3 Version
+ChatGPT
+
