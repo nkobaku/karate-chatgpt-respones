@@ -1,3 +1,27 @@
+Feature: Building URLs with Params
+
+  Scenario: Building a URL with query and matrix parameters
+    Given def baseURL = 'https://example.com/product'
+    And def queryParams = '{ "category": "electronics", "color": "blue" }'
+    And def matrixParams = '{ "size": "medium", "discount": "20" }'
+    And def buildURLWithParams =
+    """
+    function buildURLWithParams(baseURL, queryParamsStr, matrixParamsStr) {
+      const queryParamsMap = JSON.parse(queryParamsStr);
+      const matrixParamsMap = JSON.parse(matrixParamsStr);
+      
+      // The rest of the function code...
+      
+      return finalURL;
+    }
+    """
+    When def finalURL = call buildURLWithParams baseURL, queryParams, matrixParams
+    Then match finalURL == 'https://example.com/product;size=medium;discount=20?category=electronics&color=blue'
+    And print 'Final URL:', finalURL
+
+
+***"""""
+
 function buildURLWithParams(baseURL, queryParamsMap, matrixParamsMap) {
   const queryParams = [];
   const matrixParams = [];
