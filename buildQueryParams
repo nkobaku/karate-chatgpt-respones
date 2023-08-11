@@ -1,3 +1,35 @@
+function sortByParameter(array, parameter) {
+  if (!Array.isArray(array) || array.length === 0 || !parameter) {
+    return [];
+  }
+
+  return array.slice().sort((a, b) => {
+    if (a[parameter] === b[parameter]) {
+      return 0;
+    }
+    return a[parameter] < b[parameter] ? -1 : 1;
+  });
+}
+
+
+
+// Example array of objects
+const data = [
+  { id: 3, value: 20 },
+  { id: 1, value: 40 },
+  { id: 2, value: 10 }
+];
+
+// Sorting the array by the 'value' parameter
+const sortedData = sortByParameter(data, 'value');
+
+console.log(sortedData);
+
+
+
+
+
+
 function buildURLWithParams(baseURL, queryParamsMap, matrixParamsMap) {
   var queryParams = [];
   var matrixParams = [];
